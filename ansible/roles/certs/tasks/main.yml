@@ -1,0 +1,15 @@
+---
+# tasks file for certs
+- name: create certs dir
+  file: 
+    recurse: true
+    path: "/home/ansible/certs/infra.momo-store.artem-mihaylov.ru"
+    state: directory
+- name: copy cert
+  copy:
+    content: "{{ ssl_cert }}"
+    dest: "/home/ansible/certs/infra.momo-store.artem-mihaylov.ru/fullchain.pem"
+- name: copy cert private key
+  copy:
+    content: "{{ ssl_priv_key }}"
+    dest: "/home/ansible/certs/infra.momo-store.artem-mihaylov.ru/privkey.pem"

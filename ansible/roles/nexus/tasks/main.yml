@@ -1,0 +1,72 @@
+---
+# tasks file for nexus
+- name: Create a nexus network
+  docker_network:
+    name: nexus
+  become: true
+
+- name: Pull nexus Docker image
+  community.docker.docker_image:
+    name: sonatype/nexus3
+    source: pull
+  become: true
+
+- name: create nexus dir
+  file: 
+    recurse: yes
+    path: "/home/ansible/nexus-data"
+    state: directory
+    mode: '777'
+  become: true
+
+- name: Create nexus container
+  community.docker.docker_container:
+    name: nexus
+    image: sonatype/nexus3
+    state: started
+    restart: yes
+    published_ports: 8081
+    networks:
+      - name: nexus
+    volumes: /home/ansible/nexus-data:/nexus-data:rw
+    healthcheck:
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      test: ["CMD", "curl", "--fail", "http://localhost:8081/"]
+  become: true
+
+- name: create nginx dir
+  file: 
+    recurse: true
+    path: "/home/ansible/nginx"
+    state: directory
+
+- name: copy nginx.conf file to machine
+  become: true
+  copy:
+    force: true
+    dest: "/home/ansible/nginx/nginx.conf"
+    src: "files/nginx.conf"
+
+- name: Pull nginx Docker image
+  community.docker.docker_image:
+    name: nginx:1.25.3
+    source: pull
+  become: true
+
+- name: Create nginx container
+  community.docker.docker_container:
+    name: nginx
+    image: nginx:1.25.3
+    state: started
+    restart: yes
+    networks:
+      - name: nexus
+    published_ports: 
+      - 443:443
+      - 80:80
+    volumes:
+      - /home/ansible/certs/infra.momo-store.artem-mihaylov.ru:/certs:ro
+      - /home/ansible/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  become: true

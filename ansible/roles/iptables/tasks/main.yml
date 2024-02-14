@@ -1,0 +1,81 @@
+---
+# tasks file for iptables
+- name: allow localhost traffic INPUT
+  ansible.builtin.iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+    comment: allow localhost traffic INPUT
+  become: yes
+
+- name: allow localhost traffic OUTPUT
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    out_interface: lo
+    jump: ACCEPT
+    comment: allow localhost traffic OUTPUT
+  become: yes
+
+- name: allow ssh traffic INPUT
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    match: tcp
+    destination_port: 22
+    jump: ACCEPT
+    comment: allow ssh traffic INPUT
+  become: yes
+
+- name: allow ssh traffic OUTPUT
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    protocol: tcp
+    source_port: 22
+    match: state
+    ctstate: ESTABLISHED
+    jump: ACCEPT
+    comment: allow ssh traffic OUTPUT
+  become: yes
+
+- name: allow other http/https traffic INPUT
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    match: tcp
+    destination_ports:
+      - 80
+      - 443
+      - 3128
+      - 8200
+    jump: ACCEPT
+    comment: allow other http/https traffic INPUT
+  become: yes
+
+- name: allow other http/https traffic OUTPUT
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    protocol: tcp
+    destination_ports:
+      - 80
+      - 443
+      - 3128
+      - 8200
+    match: state
+    ctstate: ESTABLISHED
+    jump: ACCEPT
+    comment: allow other http/https traffic OUTPUT
+  become: yes
+
+# - name: Drop all INPUT traffic
+#   ansible.builtin.iptables:
+#     chain: INPUT
+#     jump: DROP
+#     comment: Drop all INPUT traffic
+#   become: yes
+
+# - name: Drop all OUTPUT traffic
+#   ansible.builtin.iptables:
+#     chain: OUTPUT
+#     jump: DROP
+#     comment: Drop all OUTPUT traffic
+#   become: yes

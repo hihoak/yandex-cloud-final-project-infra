@@ -1,0 +1,13 @@
+- name: Play nexus+vault
+  # Шаблон целевых хостов это группа хостов с именем backend
+  hosts: infra
+  remote_user: ansible
+  gather_facts: true
+  # Список ansible-ролей для backend-серверов
+  roles:
+    - certs
+    - iptables
+    - python
+    - docker
+    - nexus
+    - vault

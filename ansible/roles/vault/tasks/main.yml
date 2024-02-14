@@ -1,0 +1,51 @@
+---
+# tasks file for vault
+- name: create vault dirs
+  file: 
+    recurse: true
+    path: "/home/ansible/vault/config"
+    state: directory
+
+- name: create vault dirs
+  file: 
+    recurse: true
+    path: "/home/ansible/vault/file"
+    state: directory
+
+- name: create vault dirs
+  file: 
+    recurse: true
+    path: "/home/ansible/vault/logs"
+    state: directory
+
+- name: copy config.hcl file to machine
+  become: true
+  copy:
+    force: true
+    dest: "/home/ansible/vault/config/config.hcl"
+    src: "files/config.hcl"
+
+- name: Pull vault Docker image
+  community.docker.docker_image:
+    name: vault:1.11.3
+    source: pull
+  become: true
+
+- name: Create vault container
+  community.docker.docker_container:
+    name: vault
+    image: vault:1.11.3
+    state: started
+    published_ports: 8200:8200
+    command: server
+    restart: yes
+    volumes:
+      - /home/ansible/vault/config:/vault/config
+      - /home/ansible/vault/file:/vault/file
+      - /home/ansible/vault/logs:/vault/logs
+      - /home/ansible/certs/infra.momo-store.artem-mihaylov.ru:/vault/certs:ro
+    env:
+      VAULT_ADDR: https://127.0.0.1:8200
+    capabilities:
+      - IPC_LOCK
+  become: true

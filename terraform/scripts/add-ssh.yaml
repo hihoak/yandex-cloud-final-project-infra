@@ -1,0 +1,8 @@
+#cloud-config
+users:
+  - name: ansible
+    groups: sudo
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuCfoWlvOwR/X0GLThsZJfbhOkiZgfe3sBKErJ4sFwu8AmGcvKGIds92ckdah6NPm2s2IW3ubgGFJEza+7InZBxIIgrKhYihoGNXu9Vg1wEYVLjxBpC+rmW2YJ7euUtm4RiGHgnDMyintAJAJCeLyvl7i82XugHvqFMsHUOzA78BVNxz5y+DSbvzSuFh0/GLOfDN8jTIt1+E8jI38o3vz2iysfjgcaH3sOf3gzc9N1MdTBge4jhWMc6BQYitWD0VmWl50yCOThhYLvn97env5sz+UVEMzh/+lE9VuTG2XryNbhpDTUV5px5SxulMRfPRZOF43FNfAH3HN0aRtSb+zHkxjQLIJqfqBEQ6nFS55upbQ52ydIVwYIOf/Z3y4+07DFonvKl/1rN0i8V5TTJJ1d4BB5GKf/tZUiBM4HeLJT11BybNL0uxxoQ7p0KlbnSPixqiRvwnTONoJDLCWCMBvvN8b+vpM39/LraEl7/gomxJ3pBpocFR6ZYrFxnK139f0= artemikhaylov@mbp-artemikhaylov
